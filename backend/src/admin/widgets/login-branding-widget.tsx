@@ -1,5 +1,4 @@
 import { useEffect } from "react"
-import { defineWidgetConfig } from "@medusajs/admin-shared"
 
 const LoginBrandingWidget = () => {
   const brandTitle = "Suno Store"
@@ -30,8 +29,8 @@ const LoginBrandingWidget = () => {
   )
 }
 
-export const config = defineWidgetConfig({
+export const config = {
   zone: "login.before",
-})
+}
 
 export default LoginBrandingWidget

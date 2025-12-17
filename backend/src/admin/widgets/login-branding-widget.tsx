@@ -8,13 +8,45 @@ const LoginBrandingWidget = () => {
         : "/static/suno-logo.png"
 
   useEffect(() => {
-    // If the default heading exists, replace its text instead of removing it.
-    const headings = document.querySelectorAll("h1, h2")
-    headings.forEach((heading) => {
-      if (heading.textContent?.includes("Welcome to Medusa")) {
-        heading.textContent = brandTitle
-      }
-    })
+    // Remove or replace all Medusa branding
+    const removeMedusaBranding = () => {
+      // Replace headings
+      const headings = document.querySelectorAll("h1, h2, h3")
+      headings.forEach((heading) => {
+        const text = heading.textContent || ""
+        if (text.includes("Medusa") || text.includes("Welcome to Medusa")) {
+          heading.textContent = text.replace(/Medusa/gi, "").replace(/Welcome to\s*/gi, "").trim() || brandTitle
+        }
+      })
+
+      // Replace any text content with Medusa
+      const allElements = document.querySelectorAll("*")
+      allElements.forEach((el) => {
+        if (el.children.length === 0 && el.textContent) {
+          if (el.textContent.includes("Medusa") && !el.textContent.includes(brandTitle)) {
+            el.textContent = el.textContent.replace(/Medusa/gi, brandTitle)
+          }
+        }
+      })
+
+      // Remove Medusa logo if present
+      const medusaLogos = document.querySelectorAll('img[alt*="Medusa"], img[src*="medusa"]')
+      medusaLogos.forEach((logo) => {
+        if (logo instanceof HTMLImageElement) {
+          logo.style.display = "none"
+        }
+      })
+    }
+
+    // Run immediately and after a short delay to catch dynamically loaded content
+    removeMedusaBranding()
+    const timeout = setTimeout(removeMedusaBranding, 100)
+    const interval = setInterval(removeMedusaBranding, 500)
+
+    return () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+    }
   }, [])
 
   return (
